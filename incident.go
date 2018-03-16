@@ -40,7 +40,7 @@ type Incident struct {
 // Incidents get a list of the currently open, acknowledged and
 // recently resolved incidents
 func (c *Client) Incidents() (incidents []Incident, err error) {
-	resp, err := c.request(http.MethodGet, "incidents", nil)
+	resp, err := c.request(http.MethodGet, "v1/incidents", nil)
 	if err != nil {
 		return
 	}
@@ -83,7 +83,7 @@ func (c *Client) CreateIncident(summary, details string, targets []Target) (inci
 	if err != nil {
 		return
 	}
-	resp, err := c.request(http.MethodPost, "incidents", bytes.NewBuffer(bts))
+	resp, err := c.request(http.MethodPost, "v1/incidents", bytes.NewBuffer(bts))
 	if err != nil {
 		return
 	}
@@ -116,7 +116,7 @@ func (c *Client) changeIncidents(incidentIDs []string, message, state string) (i
 	if err != nil {
 		return
 	}
-	resp, err := c.request(http.MethodPatch, "incidents/"+state, bytes.NewBuffer(bts))
+	resp, err := c.request(http.MethodPatch, "v1/incidents/"+state, bytes.NewBuffer(bts))
 	if err != nil {
 		return
 	}
