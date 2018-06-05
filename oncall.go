@@ -12,6 +12,25 @@ import (
 	"strconv"
 )
 
+type UnixTimestamp struct {
+ time.Time
+}
+
+func (t *UnixTimestamp) UnmarshalJSON(b []byte) error {
+    i64, _ := strconv.ParseInt(string(b), 10, 64)
+    t.Time=time.Unix(i64/1000,0)
+    return nil
+}
+
+func (t *UnixTimestamp) MarshalJSON() ([]byte, error) {
+        i64 := t.UnixNano()
+        str := strconv.FormatInt(i64,10)
+	buffer := bytes.NewBufferString(str)
+	return buffer.Bytes(), nil
+}
+
+
+
 // Incident represents an incident on victorops
 type TeamScheduleBlock struct {
 	Team  struct {
@@ -165,8 +184,8 @@ type PrivOverride struct {
 		FirstName     string       `json:"firstName,omitempty"`
 		LastName      string       `json:"lastName,omitempty"`
 	}                              `json:"user,omitempty"`
-	Start       time.Time   `json:"start,omitempty"`
-	End         time.Time   `json:"end,omitempty"`
+	Start       UnixTimestamp   `json:"start,omitempty"`
+	End         UnixTimestamp   `json:"end,omitempty"`
 	Timezone    string   `json:"timezone,omitempty"`
 	Assignments    []PrivAssignment   `json:"assignments,omitempty"`
 }
