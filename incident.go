@@ -18,6 +18,18 @@ type Transition struct {
 	AlertURL string `json:"alertUrl,omitempty"`
 }
 
+type PagedPolicy struct {
+	Team  struct {
+		Slug     string        `json:"slug,omitempty"`
+		Name     string        `json:"name,omitempty"`
+	}                              `json:"team,omitempty"`
+	Policy  struct {
+		Slug     string        `json:"slug,omitempty"`
+		Name     string        `json:"name,omitempty"`
+	}                              `json:"policy,omitempty"`
+}
+
+
 // Incident represents an incident on victorops
 type Incident struct {
 	AlertCount        int          `json:",omitempty"`
@@ -34,6 +46,7 @@ type Incident struct {
 	StartTime         time.Time    `json:",omitempty"`
 	PagedTeams        []string     `json:",omitempty"`
 	PagedUsers        []string     `json:",omitempty"`
+	PagedPolicies     []PagedPolicy `json:",omitempty"`	
 	Transitions       []Transition `json:",omitempty"`
 }
 
