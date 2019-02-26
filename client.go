@@ -17,6 +17,12 @@ type VoClient interface {
 	CreateOverride(start, end time.Time, username string) (err error)
 	ListOverrides() (Overrides PrivOverrides, err error)
 	ConfigureOverride(overrideid int, policyslug string, username string) (err error)
+	CreateIncident(summary, details string, targets []Target) (incident CreatedIncident, err error)
+	Incidents() (incidents []Incident, err error)
+	changeIncidents(incidentIDs []string, message, state string) (incidents []IncidentStateResult, err error)
+	Ack(message string, incidentIDs ...string) ([]IncidentStateResult, error)
+	Resolve(message string, incidentIDs ...string) ([]IncidentStateResult, error)
+	RerouteIncident(incidentNumber string, targets []Target) (responsejson string, err error)
 
 }
 

@@ -3,6 +3,7 @@ package victorops
 import (
 	"bytes"
 	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"time"
 )
@@ -104,6 +105,40 @@ func (c *Client) CreateIncident(summary, details string, targets []Target) (inci
 	err = json.NewDecoder(resp.Body).Decode(&incident)
 	return
 }
+
+
+type Reroute struct {
+	IncidentNumber string                  `json:"incidentNumber,omitempty"`
+	Targets        []Target                `json:"targets,omitempty"`
+}
+type rerouteIncidentBody struct {
+	Username string                        `json:"userName,omitempty"`
+	Reroutes []Reroute                     `json:"reroutes,omitempty"`
+}
+
+// RouteIncident reroute a existing incident.
+func (c *Client) RerouteIncident(incidentNumber string, targets []Target) (responsejson string, err error) {
+	var body = rerouteIncidentBody{
+		Username: c.User,
+		Reroutes: []Reroute{
+			{IncidentNumber: incidentNumber, Targets: targets},
+		},
+	}
+	bts, err := json.Marshal(body)
+	if err != nil {
+		return
+	}
+	resp, err := c.request(http.MethodPost, "v1/incidents/reroute", bytes.NewBuffer(bts))
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
+	// TODO: return it as a real json object - but for info at least return string - should contain statuses (success)
+	responsebytes, _ := ioutil.ReadAll(resp.Body)
+	responsejson = string(responsebytes)
+	return
+}
+
 
 type incidentStateChangeRequest struct {
 	Message   string   `json:"message,omitempty"`
